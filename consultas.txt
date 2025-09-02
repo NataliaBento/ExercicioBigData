@@ -1,0 +1,37 @@
+
+-- 1) Total de universidades por país (Top 20)
+SELECT country, COUNT(*) AS total
+FROM universities
+GROUP BY country
+ORDER BY total DESC, country ASC
+LIMIT 20;
+
+-- 2) Listagem de universidades de um país específico
+SELECT name AS university, COALESCE(NULLIF(state,''), '-') AS state
+FROM universities
+WHERE country = 'Brazil'
+ORDER BY name;
+
+-- 3) Busca por universidades cujo nome contenha um termo 
+SELECT name AS university, country
+FROM universities
+WHERE LOWER(name) LIKE LOWER('%tech%')
+ORDER BY country, university
+LIMIT 20;
+
+-- 4) Ver domínios e páginas web de uma universidade específica
+SELECT u.name AS university,
+       d.domain,
+       w.url
+FROM universities u
+LEFT JOIN domains d ON d.university_id = u.id
+LEFT JOIN web_pages w ON w.university_id = u.id
+WHERE LOWER(u.name) LIKE LOWER('%campinas%')
+ORDER BY u.name, d.domain, w.url;
+
+-- 5) Quantas universidades por estado dentro de um país 
+SELECT COALESCE(NULLIF(state,''), '(sem estado)') AS state, COUNT(*) AS total
+FROM universities
+WHERE country = 'United States'
+GROUP BY state
+ORDER BY total DESC, state ASC;
